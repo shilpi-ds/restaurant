@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.hoverlist:hover{
+    background-color: #F1C553;
+}
