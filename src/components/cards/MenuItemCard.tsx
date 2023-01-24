@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { ResponsiveContext } from '../../App';
 import { useComposedCssClasses } from '../../hooks/useComposedCssClasses';
 import { CardProps } from '../../models/cardComponent';
-
+//import GetDirection from '../GetDirection';
 
 //prettier-ignore
 export interface TrainerCardConfig {
@@ -40,7 +40,7 @@ interface CtaData {
 }
 
 function isCtaData(data: unknown): data is CtaData {
-  console.log(data);
+  //console.log(data);
   if (typeof data !== 'object' || data === null) {
     return false;
   }
@@ -59,8 +59,8 @@ export interface TrainerData {
   description?:string,
   c_inspirationalQuote?: string,
   primaryPhoto?: PrimaryPhoto,
-  c_orderNowLabel?: string,
-  c_orderNowUrl?: string,
+  c_orderNow?: CtaData,
+ // c_orderNowUrl?: string,
 }
 
 //prettier-ignore
@@ -88,9 +88,11 @@ export function MenuItemCard(props: TrainerCardProps): JSX.Element {
   const { result } = props;
   const trainer = result.rawData as unknown as TrainerData;
   const trainerImg = trainer.primaryPhoto?.image?.url ?? '';
+ // const trainerCta=trainer.c_orderNow?.link??'';
   // const smallestThumbnail = trainer.logo?.image?.thumbnails[trainer.logo?.image?.thumbnails.length - 1].url
 
   const cta = isCtaData(result.rawData.c_orderNow) ? result.rawData.c_orderNow : undefined;
+  console.log(cta);
  // const cta2 = isCtaData(result.rawData.c_secondaryCTA) ? result.rawData.c_secondaryCTA : undefined;
 
   // TODO (cea2aj) We need to handle the various linkType so these CTAs are clickable
@@ -98,7 +100,7 @@ export function MenuItemCard(props: TrainerCardProps): JSX.Element {
     return (<>
       {(cta) && 
         <div>
-          {cta && <button>{cta.label}</button>}
+          {cta && <a href={cta.link}>{cta.label}</a>}
        
         </div>
       }
@@ -132,7 +134,8 @@ export function MenuItemCard(props: TrainerCardProps): JSX.Element {
             <div className='text-red-600'>{renderName(trainer.name)}</div>
             <div>{renderDescription(trainer.description)}</div>
             <div>{renderPhoto(trainer.primaryPhoto)}</div>
-           <div><a href="">Order Now</a></div>
+            <div>{renderCTAs(cta)}</div>
+           
            
             </>
   );

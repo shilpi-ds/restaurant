@@ -3,7 +3,7 @@ import { CardProps } from '../../models/cardComponent';
 import { JSXElementConstructor, ReactElement, ReactNodeArray, ReactPortal, useContext } from 'react';
 import { LocationContext } from '../LocationContext';
 import { LocationActionTypes } from '../locationReducers';
-
+import GetDirection from '../GetDirection';
 
 //prettier-ignore
 export interface LocationCardConfig {
@@ -22,6 +22,22 @@ interface Address {
   countryCode: string,
   postalCode: string,
   region: string
+}
+
+interface Latlong {
+ 
+  latitude: number,
+  longitude: number
+}
+function getLatlong(data: unknown): data is Latlong {
+  //console.log(data);
+  if (typeof data !== 'object' || data === null) {
+    return false;
+  }
+  const expectedKeys = ['latitude', 'longitude'];
+  return expectedKeys.every(key => {
+    return key in data;
+  });
 }
 
 //prettier-ignore
@@ -57,6 +73,7 @@ export interface LocationData {
   hours?: Hours,
   photoGallery?: any,
   
+  
 }
 
 const builtInCssClasses = {
@@ -76,6 +93,23 @@ const builtInCssClasses = {
 export function LocationCard(props: LocationCardProps): JSX.Element {
   const { result } = props;
   const location = result.rawData as unknown as LocationData;
+  const lat = getLatlong(result.rawData.yextDisplayCoordinate) ? result.rawData.yextDisplayCoordinate : undefined;
+  const latitude=lat?.latitude;
+  const longitude=lat?.longitude;
+  function getLat(lat?: Latlong) {
+    return (
+      
+    {latitude}
+     
+      );
+  }
+  function getLong(lat?: Latlong) {
+    return ( 
+    
+      {longitude}
+       
+      );
+  }
 
   const cssClasses = useComposedCssClasses(builtInCssClasses);
 
@@ -150,6 +184,9 @@ export function LocationCard(props: LocationCardProps): JSX.Element {
     );
   }
 
+
+
+ 
   // TODO: move to util class and use in ClassCard
   function formatTime(time?: string) {
     if (!time) return;
@@ -196,7 +233,8 @@ export function LocationCard(props: LocationCardProps): JSX.Element {
 </div>
 <div className="phone "><a id="address" className="" href={`tel:${location.mainPhone}`}>{location.mainPhone}</a>
 </div></div>
-      <a className={cssClasses.ctaButton} href="https://communityfibre.co.uk/">Get Directions</a>
+      
+      <GetDirection buttonText="Get Direction" address={location.address} latitude={getLat(lat)} longitude={getLong(lat)} label="Get direction"/>
       
       {screenSize !== 'sm' && (
         <div className={cssClasses.ctaButton}>
