@@ -1,5 +1,5 @@
 import * as React from "react";
-import svgIcons  from "../assets/image/svgIcons.svg";
+//import svgIcons  from "../assets/image/svgIcons.svg";
 type Cta = {
   buttonText: any;
   address: any;
